@@ -1,5 +1,6 @@
 package com.infinite.employee_management_system.auth_service.config;
 
+import com.infinite.employee_management_system.auth_service.security.CustomUserDetailsService;
 import com.infinite.employee_management_system.auth_service.security.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +14,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
     private final JwtFilter jwtFilter;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public SecurityConfig(JwtFilter jwtFilter) {
+    public SecurityConfig(JwtFilter jwtFilter, CustomUserDetailsService customUserDetailsService) {
         this.jwtFilter = jwtFilter;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
@@ -30,8 +33,11 @@ public class SecurityConfig {
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 //Session Stateless JWT -> Server will not keep session
-                .authorizeHttpRequests(
-                        auth -> auth.requestMatchers("/auth/login","/auth/register").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .userDetailsService(customUserDetailsService)
                 //Authorize login request without Open, rest all request is protected
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
                 //Insert JWTFilter in Spring Security filter chain

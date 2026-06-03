@@ -53,15 +53,21 @@ public class AuthServiceImpl implements AuthService{
         return userMapper.toRegisterResponse("User registered successfully.");
     }
 
+
     @Override
     public LoginResponseDTO getLoggedUser(Authentication authentication) {
+
+        if (authentication == null) {
+            throw new RuntimeException("User not authenticated");
+        }
+
         String email = authentication.getName();
+
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new RuntimeException("User not Found"));
-        LoginResponseDTO dto = new LoginResponseDTO();
-        dto.setEmail(user.getEmail());
-        dto.setRole(String.valueOf(user.getRole()));
+                .orElseThrow(() -> new RuntimeException("User not Found"));
+
         return userMapper.toCurrentUser(user);
     }
+
 
 }
