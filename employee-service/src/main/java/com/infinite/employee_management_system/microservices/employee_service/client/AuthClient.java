@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "auth-service", url = "http://localhost:8081",configuration = FeignConfig.class)
 public interface AuthClient {
-    @GetMapping("/auth/me")
+    @GetMapping("/api/auth/me")
     LoginResponseDTO getLoggedInUser();
 }

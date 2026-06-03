@@ -29,11 +29,15 @@ public class JwtFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         //LOGIN KO BYPASS
-        if (path.equals("/auth/login") || path.equals("/auth/register")) {
-            log.info("JWT Filter triggered for path: {}", path);
+
+
+        if (path.equals("/api/auth/login") || path.equals("/api/auth/register")) {
+            log.info("Skipping JWT filter for public path: {}", path);
             filterChain.doFilter(request, response);
             return;
         }
+
+
         //Authorization Header Read
         String authHeader = request.getHeader("Authorization");
 
