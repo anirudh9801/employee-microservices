@@ -1,6 +1,6 @@
 package com.infinite.employee_management_system.microservices.employee_service.config;
 
-import com.infinite.employee_management_system.microservices.employee_service.security.JwtFilter;
+import com.infinite.employee_management_system.microservices.employee_service.security.HeaderAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.context.annotation.Configuration;
@@ -14,11 +14,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final JwtFilter jwtFilter;
+    private final HeaderAuthenticationFilter headerAuthenticationFilter;
+
+    public SecurityConfig(HeaderAuthenticationFilter headerAuthenticationFilter) {
+        this.headerAuthenticationFilter = headerAuthenticationFilter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,7 +39,7 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         )
 
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(headerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .build();
     }

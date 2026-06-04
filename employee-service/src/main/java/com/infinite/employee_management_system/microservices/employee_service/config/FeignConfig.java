@@ -1,9 +1,10 @@
 package com.infinite.employee_management_system.microservices.employee_service.config;
 
 import feign.RequestInterceptor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.context.annotation.*;
+import org.springframework.web.context.request.*;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 public class FeignConfig {
@@ -12,15 +13,18 @@ public class FeignConfig {
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
 
-            var authentication = SecurityContextHolder
-                    .getContext()
-                    .getAuthentication();
+            ServletRequestAttributes attributes =
+                    (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
-            if (authentication != null && authentication.getCredentials() != null) {
+            if (attributes != null) {
 
-                String token = authentication.getCredentials().toString();
+                HttpServletRequest request = attributes.getRequest();
 
-                requestTemplate.header("Authorization", "Bearer " + token);
+                String authHeader = request.getHeader("Authorization");
+
+                if (authHeader != null) {
+                    requestTemplate.header("Authorization", authHeader);
+                }
             }
         };
     }
