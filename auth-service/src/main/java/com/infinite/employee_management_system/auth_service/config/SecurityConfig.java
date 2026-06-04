@@ -2,6 +2,7 @@ package com.infinite.employee_management_system.auth_service.config;
 
 import com.infinite.employee_management_system.auth_service.security.CustomUserDetailsService;
 import com.infinite.employee_management_system.auth_service.security.JwtFilter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@Slf4j
 @Configuration
 public class SecurityConfig {
     private final JwtFilter jwtFilter;
@@ -28,6 +30,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+        log.info("Inside SecurityFilterChain method in SecurityConfig class");
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(
